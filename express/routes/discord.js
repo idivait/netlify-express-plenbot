@@ -1,7 +1,8 @@
 'use strict';
 const express = require('express');
 const axios = require('axios');
-const moment = require('moment');
+const embedFromDR = require('../discord/embeds').embedFromDR;
+const baseResponse = require('../discord/embeds').baseResponse;
 
 const router = express.Router();
 
@@ -20,69 +21,16 @@ router.post('/', (req, res) => {
   const DISCORD_EP = `https://discordapp.com/api/webhooks/646892584454848544/4QqmHrt-krxAR0ehONPF8yuItj_jVadNjYMkywOdQxtQms_hCXKwfgEQjsBC56cLsQ5h`;
 
   axios.post(DR_JSON_EP).then(response => {
-    let {
-      recordedBy,
-      timeStart,
-      duration,
-      players
-    } = response.data;
-    let squadCount = players.length;
-    let groupCount = players.reduce(function (total, currentValue, currentIndex, arr) {
-      if (!total[currentValue.group]) {
-        total[currentValue.group] = 1;
-      } else {
-        total[currentValue.group]++;
-      }
-      return total;
-    }, {});
 
-    let start = moment(timeStart, "YYYY-MM-DD HH:mm:ss Z");
+    let embed_response = baseResponse( "", embedFromDR( response, permalink ) ); 
 
-    let embed = {
-      "content": "",
-      "embeds": [{
-        "color": 2451166,
-        "title": `New Log`,
-        "author": {
-          "name": recordedBy
-        },
-        "description": "",
-        "fields": [{
-            "name": "URL",
-            "value": permalink
-          },
-          {
-            "name": "Started",
-            "value": start.format("ddd, h:mmA"),
-            "inline": true
-          },
-          {
-            "name": "Duration",
-            "value": duration,
-            "inline": true
-          },
-          {
-            "name": "Subgroups",
-            "value": Object.keys(groupCount).length,
-            "inline": true
-          },
-          {
-            "name": "Squad Count",
-            "value": squadCount,
-            "inline": true
-          }
-        ],
-        "timestamp": new Date(),
-      }]
-    };
-
-    axios.post(DISCORD_EP, embed)
+    axios.post( DISCORD_EP, JSON.stringify(embed_response) )
       .then(response => {
-        console.log(response)
+        //console.log(response)
         res.json(status);
       })
       .catch(error => {
-        console.error(error);
+        //console.error(error);
         res.json(error);
       });
   });
