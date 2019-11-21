@@ -18,7 +18,8 @@ router.post('/', (req, res) => {
   // Get the data
   const permalink = req.body.permalink ? req.body.permalink : req.query.permalink;
   const DR_JSON_EP = `https://dps.report/getJson?permalink=${permalink}`;
-  const DISCORD_EP = `https://discordapp.com/api/webhooks/646892584454848544/4QqmHrt-krxAR0ehONPF8yuItj_jVadNjYMkywOdQxtQms_hCXKwfgEQjsBC56cLsQ5h`;
+  //const DISCORD_EP = `https://discordapp.com/api/webhooks/646892584454848544/4QqmHrt-krxAR0ehONPF8yuItj_jVadNjYMkywOdQxtQms_hCXKwfgEQjsBC56cLsQ5h`; // test channel ep
+  const DISCORD_EP = `https://discordapp.com/api/webhooks/647194942242029587/-R146dIOua_sr8NxU-ISxwj0w3McIDCKpuwhq1BB-uyYlQWm8Qo6mQbC0sLAuh8ncwAb`;
 
   axios.post(DR_JSON_EP).then(response => {
 
