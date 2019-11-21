@@ -16,25 +16,21 @@ router.get('/', (req, res) => {
 router.get('/another', (req, res) => res.json({ route: req.originalUrl }));
 router.post('/', (req, res) => res.json({ postBody: req.body }));
 
-let response = {
+let status = {
   "status" : {
     "code" : "200",
-    "msg" : "Hi there?"
-  },
-  "log" : {
-    "user_id" : "1",
-    "log_id" : "1"
+    "msg" : "Message sent to Discord!"
   }
 };
 
-router.get('/discord', (req, res)=> {
+router.post('/discord', (req, res)=> {
 
   // Get the data
   const permalink = req.body.permalink ? req.body.permalink : req.query.permalink;
   const DR_JSON_EP = `https://dps.report/getJson?permalink=${permalink}`;
   const DISCORD_EP = `https://discordapp.com/api/webhooks/646892584454848544/4QqmHrt-krxAR0ehONPF8yuItj_jVadNjYMkywOdQxtQms_hCXKwfgEQjsBC56cLsQ5h`;
 
-  axios.get(DR_JSON_EP).then(response => {
+  axios.post(DR_JSON_EP).then(response => {
     let { recordedBy, timeStart, duration, players } = response.data;
     let squadCount = players.length;
     let groupCount = players.reduce(function(total, currentValue, currentIndex, arr){
@@ -88,7 +84,7 @@ router.get('/discord', (req, res)=> {
         }
       ]
     };
-    
+
     axios.post( DISCORD_EP, embed )
       .then(response=>{
         console.log(response)
@@ -98,12 +94,12 @@ router.get('/discord', (req, res)=> {
       });
   });
 
-  res.json(response);
+  res.json(status);
 
 });
 
 router.get('/discord/pingtest', (req, res)=> {
-  res.json(response);
+  res.json(status);
 });
 
 app.use(bodyParser.json());
