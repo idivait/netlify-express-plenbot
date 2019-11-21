@@ -79,13 +79,15 @@ router.post('/', (req, res) => {
     axios.post(DISCORD_EP, embed)
       .then(response => {
         console.log(response)
+        res.json(status);
       })
       .catch(error => {
         console.error(error);
+        res.json(error);
       });
   });
 
-  res.json(status);
+  
 
 });
 
